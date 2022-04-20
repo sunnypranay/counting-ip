@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta name="viewport" content="intial-scale = 1, width = device-width">
+        <title>Count - IP</title>
+    </head>
+    <body>
+        <p id = "1">Counting total number of Ip's give a second</p>
+    </body>
+    <script>
+
+        function get_data(){
+            var data;
+            fetch('https://raw.githubusercontent.com/stamparm/ipsum/master/levels/5.txt')
+            .then(response => response.text())
+            .then(data => count_it(data));
+        }
+
+        function count_it(data){
+            let array = data.split("\n");
+            result = {};
+            result["ips"] = array;
+            result = JSON.stringify(result);
+            const options = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: result
+            };
+            fetch('http://127.0.0.1:5000/count_ips_in_ipsum', options)
+            .then(response => response.json())
+            .then(result => change_page_data(result));
+        }
+
+        function change_page_data(result){
+            element = document.getElementById("1");
+            element.remove();
+            var element = document.createElement("p");
+            var txt = document.createTextNode("The total number of IP's are " + result['count'])
+            element.appendChild(txt);
+            document.body.appendChild(element);
+        }
+
+        window.onload = function() {
+            get_data();
+        }
+    </script>
+</html>
